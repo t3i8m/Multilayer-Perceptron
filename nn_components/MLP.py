@@ -1,6 +1,6 @@
 import numpy as np
 from nn_components.layer import Layer
-from utils import loss_function, sigmoid_function
+from utils import loss_function, sigma_prime_from_a, sigmoid_function
 import random
 
 class NeuralNetwork(object):
@@ -23,6 +23,8 @@ class NeuralNetwork(object):
         self.params = [prev_neuron_num*neuron_number+neuron_number for prev_neuron_num, neuron_number in zip(num_neurons[:-1], num_neurons[1:])]
 
         self.input_layer = Layer(784, 0)
+        self.input_layer.set_activations(np.zeros(784))
+
         self.output_layer = Layer(10, num_neurons[-2])
         self.layers = [self.input_layer]
         self.layers.extend([Layer(current_neuron_num, prev_layer) for current_neuron_num, prev_layer in zip(num_neurons[1:num_layers+1], num_neurons[:num_layers])])
@@ -37,7 +39,7 @@ class NeuralNetwork(object):
             layer_weights = layer.get_weights()
             layer_biases = layer.get_biases()
             a = sigmoid_function(np.dot(layer_weights, a)+layer_biases)
-
+            layer.set_activations(a)
         return a
 
     def stochastic_gradient_descent(self, training_data:list, epochs:int, mini_batch_size:int, learning_rate:float, test_data=None)->None:
@@ -78,13 +80,36 @@ class NeuralNetwork(object):
 
 
 
+
         return
 
-    def backprop(self, batch, cost_function:float):
-        predicted = self.feedforward(n[0])
-        loss = loss_function(predicted, n[1])
+    def backprop(self, batch:tuple):
+        """Use a backpropogation algorithm to calculate gradients for each weight and bias."""
 
-        for n in self.layers[-1::]:
+        # calculate gradients in the output layer
+        output_layer = self.layers[-1]
+        error = 2*(output_layer.get_activations()-batch[1])*sigma_prime_from_a(output_layer.get_activations())
+        gradients_output = np.outer(error, self.layers[-2].get_activations())
+        output_layer.set_gradients_weights(gradients_output)
+        output_layer.set_gradients_bias(error)
+
+        error_next = error
+        for index in range(len(self.layers)-2, 0, -1):
+
+            layer = self.layers[index]
+            next_layer = self.layers[index + 1]
+            weights_next = next_layer.get_weights() 
+
+            error = np.dot(weights_next.T, error_next)*sigma_prime_from_a(layer.get_activations())
+            activations_prev = self.layers[index - 1].get_activations()
+            gradients = np.outer(error, activations_prev)
+
+            layer.set_gradients_weights(gradients)
+            layer.set_gradients_bias(error)
+
+            error_next = error
+
+        return
 
 
     

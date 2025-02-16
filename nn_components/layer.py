@@ -30,7 +30,29 @@ class Layer(object):
         self.neurons = [Neuron(self.prev_layer_size) for _ in range(self.size)]
         return
     
-    def set_activations(self, activations:np.array)->int:
+    def set_activations(self, activations:np.array)->None:
         """Setter for the activations"""
-
-        return self.size
+        self.activations = activations
+        return 
+    
+    def get_activations(self)->np.array:
+        """Getter for the activations"""
+        return self.activations
+    
+    def set_gradients_weights(self, gradients:np.array)->None:
+        """Setter for the gradients"""
+        self.gradients = gradients
+        return 
+    
+    def get_gradients_weights(self)->np.array:
+        """Getter for the gradients"""
+        return self.gradients
+    
+    def set_gradients_bias(self, gradients:np.array)->None:
+        """Setter for the gradients"""
+        self.gradients_bias = gradients
+        return 
+    
+    def get_gradients_bias(self)->np.array:
+        """Getter for the gradients"""
+        return self.gradients_bias
