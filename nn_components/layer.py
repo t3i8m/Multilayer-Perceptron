@@ -29,3 +29,8 @@ class Layer(object):
 
         self.neurons = [Neuron(self.prev_layer_size) for _ in range(self.size)]
         return
+    
+    def set_activations(self, activations:np.array)->int:
+        """Setter for the activations"""
+
+        return self.size

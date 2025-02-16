@@ -1,6 +1,6 @@
 import numpy as np
 from nn_components.layer import Layer
-from utils import sigmoid_function
+from utils import loss_function, sigmoid_function
 import random
 
 class NeuralNetwork(object):
@@ -20,6 +20,8 @@ class NeuralNetwork(object):
         # set up layers
         self.num_layers = num_layers
         self.num_neurons = num_neurons
+        self.params = [prev_neuron_num*neuron_number+neuron_number for prev_neuron_num, neuron_number in zip(num_neurons[:-1], num_neurons[1:])]
+
         self.input_layer = Layer(784, 0)
         self.output_layer = Layer(10, num_neurons[-2])
         self.layers = [self.input_layer]
@@ -63,8 +65,26 @@ class NeuralNetwork(object):
                 print(f"Epoch {n} complete")
         return
 
-    def update_mini_batches(self, learning_rate):
+    def update_mini_batches(self, mini_batch:list, learning_rate:float):
         """Update the network’s weights and biases by applying gradient descent using
         backpropagation to a single mini batch. The "mini_batch" is a list of tuples
-        "(x, y)", and "eta" is the learning rate."""
-        pass
+        "(x, y)", and the learning rate."""
+
+        gradients = [[np.zeros(n)] for n in self.params]
+
+        for index, n in enumerate(mini_batch):
+
+            self.backprop()
+
+
+
+        return
+
+    def backprop(self, batch, cost_function:float):
+        predicted = self.feedforward(n[0])
+        loss = loss_function(predicted, n[1])
+
+        for n in self.layers[-1::]:
+
+
+    
