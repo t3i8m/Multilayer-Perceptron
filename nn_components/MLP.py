@@ -52,13 +52,12 @@ class NeuralNetwork(object):
         """
         if test_data:
             test_size = len(test_data)
-
         for n in range(epochs):
             # shuffle the training data before each epoch
             random.shuffle(training_data)
 
             mini_batches = [training_data[n:n+mini_batch_size] for n in range(0, len(training_data), mini_batch_size)]
-            for mini_batch in mini_batches:
+            for index,mini_batch in enumerate(mini_batches):
                 self.update_mini_batches(mini_batch, learning_rate)
 
             if(test_data):
@@ -81,7 +80,6 @@ class NeuralNetwork(object):
         for layer in layers:
             layer.update_weights(learning_rate)
             layer.update_biases(learning_rate)
-
         return
 
     def backprop(self, batch:tuple):
@@ -115,14 +113,15 @@ class NeuralNetwork(object):
 
         return
 
-    def evaluate(self, test_data):
+    def evaluate(self, test_data:list)->int:
         """Use a feedforward to check the number of correct guesses with true labels"""
         true_output = [n[1] for n in test_data]
         predicted = []
-        for x in test_data[0]:
-            predicted.append(self.feedforward(x))
+        for sample in test_data:
+            predicted_class = np.argmax(self.feedforward(sample[0]))
+            predicted.append(predicted_class)
             
-        true_predicted = list(map(lambda x,y:x==y, zip(true_output, predicted)))
+        true_predicted = list(map(lambda pair: pair[0] == pair[1], zip(true_output, predicted)))
         return sum(true_predicted)
 
 
