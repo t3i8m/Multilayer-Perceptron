@@ -72,14 +72,15 @@ class NeuralNetwork(object):
         backpropagation to a single mini batch. The "mini_batch" is a list of tuples
         "(x, y)", and the learning rate."""
 
-        gradients = [[np.zeros(n)] for n in self.params]
+        layers = self.layers[1::]
 
-        for index, n in enumerate(mini_batch):
+        for batch in mini_batch:
+            self.feedforward(batch[0])
+            self.backprop(batch)
 
-            self.backprop()
-
-
-
+        for layer in layers:
+            layer.update_weights(learning_rate)
+            layer.update_biases(learning_rate)
 
         return
 
@@ -88,7 +89,7 @@ class NeuralNetwork(object):
 
         # calculate gradients in the output layer
         output_layer = self.layers[-1]
-        error = 2*(output_layer.get_activations()-batch[1])*sigma_prime_from_a(output_layer.get_activations())
+        error = (output_layer.get_activations()-batch[1])*sigma_prime_from_a(output_layer.get_activations())
         gradients_output = np.outer(error, self.layers[-2].get_activations())
         output_layer.set_gradients_weights(gradients_output)
         output_layer.set_gradients_bias(error)
