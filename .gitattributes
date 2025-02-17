@@ -1,0 +1,2 @@
+data/mnist.pkl filter=lfs diff=lfs merge=lfs -text
+data/mnist.pkl.gz filter=lfs diff=lfs merge=lfs -text
