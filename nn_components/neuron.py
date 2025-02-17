@@ -13,12 +13,12 @@ class Neuron(object):
         """Getter for the neuron`s weights [1 x prev_layer_neurons_size]"""
         return self.weights
     
-    def add_gradients_weights(self, gradients=np.array())->None:
+    def add_gradients_weights(self, gradients:np.array)->None:
         """Add gradients for all of the weights in this neuron, input:[1 x prev_layer_neurons_size]"""
         self.gradients_holder_weights.append(gradients)
         return
     
-    def add_gradients_biases(self, gradients=np.array())->None:
+    def add_gradients_biases(self, gradients:np.array)->None:
         """Add gradients for all of the biases in this neuron, input:[1 x prev_layer_neurons_size]"""
         self.gradients_holder_biases.append(gradients)
         return
@@ -35,16 +35,19 @@ class Neuron(object):
     
     def update_biase(self, learning_rate:float)->None:
         """Update bias by computing avg gradient and using formula: b(new) = b(old)-learningRate*avgGradient"""
-        coeff = self.calculate_avg_gradients(self.gradients_holder_biases)[0]
+        coeff = float(self.calculate_avg_gradients(self.gradients_holder_biases))
 
-        self.bias = self.bias-learning_rate*coeff
-
+        self.bias = float(self.bias)-learning_rate*coeff
+        # print(self.bias)
         self.gradients_holder_biases=[]
         return
     
     def get_bias(self)->float:
-        return self.bias
-    
+        """Getter for the bias"""
+        return float(self.bias)
+
     def calculate_avg_gradients(self, gradients:list)->np.array:
+        """Calculate average gradient for the each weight"""
         gradients_array = np.array(gradients)  
         return np.mean(gradients_array, axis=0)  
+    

@@ -11,7 +11,7 @@ class NeuralNetwork(object):
         if(num_layers!=len(num_neurons)):
             raise ValueError("Mismath in the number of layers and num_neurons length. Must be the same!")
         
-        if(type(num_layers)!=int and type(num_neurons)!=list):
+        if(type(num_layers)!=int or type(num_neurons)!=list):
             raise TypeError("Mismath in the arguments types!")
 
         # add neurons` number for the input/output layers  
@@ -36,13 +36,13 @@ class NeuralNetwork(object):
         a = a.reshape(-1, 1) if a.ndim == 1 else a
 
         for layer in self.layers[1:]:
-            layer_weights = layer.get_weights()
+            layer_weights =  np.squeeze(layer.get_weights(), axis=2)
             layer_biases = layer.get_biases()
             a = sigmoid_function(np.dot(layer_weights, a)+layer_biases)
             layer.set_activations(a)
         return a
 
-    def stochastic_gradient_descent(self, training_data:list, epochs:int, mini_batch_size:int, learning_rate:float, test_data=None)->None:
+    def SGD(self, training_data:list, epochs:int, mini_batch_size:int, learning_rate:float, test_data=None)->None:
         """Train the neural network using mini-batch stochastic gradient descent. The
         "training_data" is a list of tuples "(x, y)" representing the training
         inputs and the desired outputs. The other non-optional parameters are self -
@@ -57,7 +57,7 @@ class NeuralNetwork(object):
             # shuffle the training data before each epoch
             random.shuffle(training_data)
 
-            mini_batches = [training_data[n:mini_batch_size] for n in range(0, len(training_data), mini_batch_size)]
+            mini_batches = [training_data[n:n+mini_batch_size] for n in range(0, len(training_data), mini_batch_size)]
             for mini_batch in mini_batches:
                 self.update_mini_batches(mini_batch, learning_rate)
 
@@ -75,7 +75,7 @@ class NeuralNetwork(object):
         layers = self.layers[1::]
 
         for batch in mini_batch:
-            self.feedforward(batch[0])
+            predicted = self.feedforward(batch[0])
             self.backprop(batch)
 
         for layer in layers:
@@ -91,6 +91,8 @@ class NeuralNetwork(object):
         output_layer = self.layers[-1]
         error = (output_layer.get_activations()-batch[1])*sigma_prime_from_a(output_layer.get_activations())
         gradients_output = np.outer(error, self.layers[-2].get_activations())
+        error = error.reshape(-1, 1)
+
         output_layer.set_gradients_weights(gradients_output)
         output_layer.set_gradients_bias(error)
 
@@ -102,15 +104,26 @@ class NeuralNetwork(object):
             weights_next = next_layer.get_weights() 
 
             error = np.dot(weights_next.T, error_next)*sigma_prime_from_a(layer.get_activations())
+            error = error.reshape(-1, 1)
+
             activations_prev = self.layers[index - 1].get_activations()
             gradients = np.outer(error, activations_prev)
 
             layer.set_gradients_weights(gradients)
             layer.set_gradients_bias(error)
-
             error_next = error
 
         return
+
+    def evaluate(self, test_data):
+        """Use a feedforward to check the number of correct guesses with true labels"""
+        true_output = [n[1] for n in test_data]
+        predicted = []
+        for x in test_data[0]:
+            predicted.append(self.feedforward(x))
+            
+        true_predicted = list(map(lambda x,y:x==y, zip(true_output, predicted)))
+        return sum(true_predicted)
 
 
     

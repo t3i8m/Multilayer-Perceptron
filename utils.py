@@ -1,6 +1,4 @@
-import math
 import numpy as np
-
 
 def sigmoid_function(x:np.array)->np.array:
     """A sigmoid activation function implementation"""
@@ -13,3 +11,4 @@ def loss_function(predicted:np.array, real:np.array):
 def sigma_prime_from_a(a:np.array)->np.array:
     """Sigma prime from the activations"""
     return a * (1 - a)
+
