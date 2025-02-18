@@ -12,3 +12,4 @@ def sigma_prime_from_a(a:np.array)->np.array:
     """Sigma prime from the activations"""
     return a * (1 - a)
 
+# a

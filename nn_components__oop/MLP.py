@@ -1,5 +1,5 @@
 import numpy as np
-from nn_components.layer import Layer
+from nn_components_oop.layer import Layer
 from utils import loss_function, sigma_prime_from_a, sigmoid_function
 import random
 

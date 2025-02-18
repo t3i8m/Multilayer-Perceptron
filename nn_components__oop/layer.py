@@ -1,5 +1,5 @@
 import numpy as np
-from nn_components.neuron import Neuron
+from nn_components_oop.neuron import Neuron
 
 class Layer(object):
 
