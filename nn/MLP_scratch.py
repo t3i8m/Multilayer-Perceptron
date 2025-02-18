@@ -1,8 +1,8 @@
 import random
 import numpy as np
-from mnist_loader import load_data_wrapper
+from utils.mnist_loader import load_data_wrapper
+from utils.activation_loss import loss_function, sigma_prime_from_a, sigmoid_function
 
-from utils import loss_function, sigma_prime_from_a, sigmoid_function
 class NeuralNetworkRaw(object):
     def __init__(self,*args):
         """Args get all of the layers including input/output and generates weights/biases from the Normal distribution"""
@@ -87,8 +87,3 @@ class NeuralNetworkRaw(object):
                 counter+=1
 
         return counter
-
-net = NeuralNetworkRaw([784 , 30, 10])
-training_data , validation_data , test_data = load_data_wrapper()
-print("------------Data was loaded------------------")
-net.SGD(training_data , 30, 32, 3.0, test_data = test_data )
