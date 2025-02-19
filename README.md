@@ -29,3 +29,30 @@ python main.py
 ## Dataset
 This project uses the **MNIST dataset**, a collection of 60,000 training images and 10,000 test images of handwritten digits (0-9).
 Each image is **28x28** pixels in grayscale.
+
+## Structure 
+```sh
+
+Multilayer-Perceptron/
+│── __pycache__/             # Compiled Python files
+│── data/                    # Dataset storage
+│   ├── mnist.pkl.gz         # MNIST dataset in pickle format
+│── nn/                      # Neural network (scratch implementation)
+│   ├── __pycache__/         # Compiled Python files
+│   ├── MLP_scratch.py       # MLP implementation from scratch
+│── nn_oop/                  # Object-Oriented Neural Network implementation
+│   ├── __pycache__/         # Compiled Python files
+│   ├── __init__.py          # Package initialization
+│   ├── layer.py             # Layer implementation
+│   ├── MLP.py               # Main MLP class
+│   ├── neuron.py            # Neuron implementation
+│── utils/                   # Utility functions
+│   ├── __pycache__/         # Compiled Python files
+│   ├── __init__.py          # Package initialization
+│   ├── activation_loss.py   # Activation functions and loss calculations
+│   ├── mnist_loader.py      # MNIST dataset loader
+│── main.py                  # Main script to run the model
+│── README.md                # Project documentation
+```
+## License
+MIT License
